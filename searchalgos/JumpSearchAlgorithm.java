@@ -1,23 +1,25 @@
+package searchalgos;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class TernarySearchAlgorithm {
+public class JumpSearchAlgorithm {
     public static void main(String[] args) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         try {
             System.out.println("Enter sorted integers separated by spaces:");
             String numbersLine = reader.readLine();
             String[] numbersStr = numbersLine.trim().split("\\s+");
-            int[] arr = new int[numbersStr.length];
-            for(int i = 0; i < numbersStr.length; i++) {
-                arr[i] = Integer.parseInt(numbersStr[i]);
+            int[] numbers = new int[numbersStr.length];
+            for (int i = 0; i < numbersStr.length; i++) {
+                numbers[i] = Integer.parseInt(numbersStr[i]);
             }
             
             System.out.println("Enter the target value:");
             int target = Integer.parseInt(reader.readLine().trim());
             
-            int index = ternarySearch(arr, 0, arr.length - 1, target);
+            int index = jumpSearch(numbers, target);
+            
             if(index != -1) {
                 System.out.println("Target " + target + " found at index: " + index);
             } else {
@@ -28,21 +30,24 @@ public class TernarySearchAlgorithm {
         }
     }
     
-    public static int ternarySearch(int[] arr, int left, int right, int target) {
-        if(right < left) return -1;
+    public static int jumpSearch(int[] arr, int target) {
+        int n = arr.length;
+        int step = (int)Math.sqrt(n);
+        int prev = 0;
         
-        int third = (right - left) / 3;
-        int mid1 = left + third;
-        int mid2 = right - third;
+        // Jump until the value at index is greater than or equal to target
+        while(prev < n && arr[Math.min(step, n) - 1] < target) {
+            prev = step;
+            step += (int)Math.sqrt(n);
+            if(prev >= n) return -1;
+        }
         
-        if(arr[mid1] == target) return mid1;
-        if(arr[mid2] == target) return mid2;
-        
-        if(target < arr[mid1])
-            return ternarySearch(arr, left, mid1 - 1, target);
-        else if(target > arr[mid2])
-            return ternarySearch(arr, mid2 + 1, right, target);
-        else
-            return ternarySearch(arr, mid1 + 1, mid2 - 1, target);
+        // Linear search within the block
+        while(prev < Math.min(step, n)) {
+            if(arr[prev] == target)
+                return prev;
+            prev++;
+        }
+        return -1;
     }
 }

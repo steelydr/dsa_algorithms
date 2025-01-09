@@ -1,8 +1,9 @@
+package searchalgos;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class ExponentialSearchAlgorithm {
+public class BinarySearchAlgorithm {
     public static void main(String[] args) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         try {
@@ -17,7 +18,7 @@ public class ExponentialSearchAlgorithm {
             System.out.println("Enter the target value:");
             int target = Integer.parseInt(reader.readLine().trim());
             
-            int index = exponentialSearch(numbers, target);
+            int index = binarySearch(numbers, target);
             
             if(index != -1) {
                 System.out.println("Target " + target + " found at index: " + index);
@@ -29,24 +30,17 @@ public class ExponentialSearchAlgorithm {
         }
     }
     
-    public static int exponentialSearch(int[] arr, int target) {
-        int n = arr.length;
-        if(n == 0) return -1;
-        if(arr[0] == target) return 0;
-        
-        int bound = 1;
-        while(bound < n && arr[bound] < target) {
-            bound *= 2;
-        }
-        
-        // Use binary search for the found range
-        int low = bound / 2;
-        int high = Math.min(bound, n - 1);
+    public static int binarySearch(int[] arr, int target) {
+        int low = 0;
+        int high = arr.length - 1;
         while(low <= high) {
             int mid = low + (high - low) / 2;
-            if(arr[mid] == target) return mid;
-            if(arr[mid] < target) low = mid + 1;
-            else high = mid - 1;
+            if(arr[mid] == target)
+                return mid;
+            if(arr[mid] < target)
+                low = mid + 1;
+            else
+                high = mid - 1;
         }
         return -1;
     }

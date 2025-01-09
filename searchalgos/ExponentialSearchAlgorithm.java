@@ -1,8 +1,9 @@
+package searchalgos;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
-public class JumpSearchAlgorithm {
+public class ExponentialSearchAlgorithm {
     public static void main(String[] args) {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         try {
@@ -17,7 +18,7 @@ public class JumpSearchAlgorithm {
             System.out.println("Enter the target value:");
             int target = Integer.parseInt(reader.readLine().trim());
             
-            int index = jumpSearch(numbers, target);
+            int index = exponentialSearch(numbers, target);
             
             if(index != -1) {
                 System.out.println("Target " + target + " found at index: " + index);
@@ -29,23 +30,24 @@ public class JumpSearchAlgorithm {
         }
     }
     
-    public static int jumpSearch(int[] arr, int target) {
+    public static int exponentialSearch(int[] arr, int target) {
         int n = arr.length;
-        int step = (int)Math.sqrt(n);
-        int prev = 0;
+        if(n == 0) return -1;
+        if(arr[0] == target) return 0;
         
-        // Jump until the value at index is greater than or equal to target
-        while(prev < n && arr[Math.min(step, n) - 1] < target) {
-            prev = step;
-            step += (int)Math.sqrt(n);
-            if(prev >= n) return -1;
+        int bound = 1;
+        while(bound < n && arr[bound] < target) {
+            bound *= 2;
         }
         
-        // Linear search within the block
-        while(prev < Math.min(step, n)) {
-            if(arr[prev] == target)
-                return prev;
-            prev++;
+        // Use binary search for the found range
+        int low = bound / 2;
+        int high = Math.min(bound, n - 1);
+        while(low <= high) {
+            int mid = low + (high - low) / 2;
+            if(arr[mid] == target) return mid;
+            if(arr[mid] < target) low = mid + 1;
+            else high = mid - 1;
         }
         return -1;
     }
